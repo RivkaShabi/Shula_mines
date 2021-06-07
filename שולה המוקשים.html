@@ -1,0 +1,273 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<script src="jquery-3.4.1.min.js"></script>
+	<meta charset="utf-8" />
+	<title>שולה המוקשים</title>
+	<script>
+		$(document).ready(function () {
+			$('.popup').hide();
+			$('td').click(function() {
+				if($(this).hasClass('cover')) {
+					$(this).removeClass('cover');
+					if($(this).hasClass('number')) {
+						$(this).html($(this).data('number'));
+						removeEmptyAround(this);
+						$('.checked_empty').removeClass('checked_empty');
+					} else if($(this).hasClass('empty')) {
+						removeEmptyAround(this);
+						$('.checked_empty').removeClass('checked_empty');
+					} else if($(this).hasClass('danger')) {
+						discoverAll();
+						$("#failed").fadeIn();
+						return;
+					}
+				}
+				if($('.empty.cover').length == 0 && $('.number.cover').length == 0) {
+					$("#succees").fadeIn();
+				}
+			});
+		});
+
+		function removeEmptyAround(cell) {
+			if($(cell).hasClass('checked_empty'))
+				return;
+			$(cell).addClass('checked_empty');
+			var row_index = $(cell).parent().index();
+			var col_index = $(cell).index();
+			if(row_index > 0) {
+				if(col_index > 0) {
+					cell = $('tr:eq(' + (row_index - 1) + ') td:eq(' + (col_index - 1) + ')');
+					if($(cell).hasClass('empty')) {
+						$(cell).removeClass('cover');
+						removeEmptyAround(cell);
+					}
+				}
+				cell = $('tr:eq(' + (row_index - 1) + ') td:eq(' + (col_index) + ')');
+				if($(cell).hasClass('empty')) {
+					$(cell).removeClass('cover');
+					removeEmptyAround(cell);
+				}
+				if(col_index < 8) {
+					cell = $('tr:eq(' + (row_index - 1) + ') td:eq(' + (col_index + 1) + ')');
+					if($(cell).hasClass('empty')) {
+						$(cell).removeClass('cover');
+						removeEmptyAround(cell);
+					}
+				}
+			}
+			if(col_index > 0) {
+				cell = $('tr:eq(' + (row_index) + ') td:eq(' + (col_index - 1) + ')');
+				if($(cell).hasClass('empty')) {
+					$(cell).removeClass('cover');
+					removeEmptyAround(cell);
+				}
+			}
+			if(col_index < 8) {
+				cell = $('tr:eq(' + (row_index) + ') td:eq(' + (col_index + 1) + ')');
+				if($(cell).hasClass('empty')) {
+					$(cell).removeClass('cover');
+					removeEmptyAround(cell);
+				}
+			}
+			if(row_index < 8) {
+				if(col_index > 0) {
+					cell = $('tr:eq(' + (row_index + 1) + ') td:eq(' + (col_index - 1) + ')');
+					if($(cell).hasClass('empty')) {
+						$(cell).removeClass('cover');
+						removeEmptyAround(cell);
+					}
+				}
+				cell = $('tr:eq(' + (row_index + 1) + ') td:eq(' + (col_index) + ')');
+				if($(cell).hasClass('empty')) {
+					$(cell).removeClass('cover');
+					removeEmptyAround(cell);
+				}
+				if(col_index < 8) {
+					cell = $('tr:eq(' + (row_index + 1) + ') td:eq(' + (col_index + 1) + ')');
+					if($(cell).hasClass('empty')) {
+						$(cell).removeClass('cover');
+						removeEmptyAround(cell);
+					}
+				}
+			}
+		}
+
+		function discoverAll() {
+			$('.cover').each(function() {
+				$(this).removeClass('cover');
+				if($(this).hasClass('number')) {
+					$(this).html($(this).data('number'));
+				} else if($(this).hasClass('danger')) {
+					$(this).html($(this).data('X'));
+				}
+			});
+		}
+	</script>
+	<link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+	<style>
+		body {
+			text-align: center;
+			direction: rtl;
+			font-family: 'Varela Round', sans-serif;
+			background-color: #A0A000;
+			text-decoration-color: #4A4D4A;
+		}
+
+		table {
+			margin: 50px auto;
+		}
+
+		td {
+			width: 50px;
+			height: 50px;
+			border: 1px solid #eeeeee;
+			box-shadow: inset -3px -2px 8px #dedede;
+		}
+
+		.empty {
+			background: white;
+		}
+
+		.danger {
+			background: red;
+			color: white;
+		}
+
+		.number {
+			color: green;
+		}
+
+		.cover {
+			color: transparent;
+			background: gray;
+			cursor: pointer;
+		}
+
+		.popup {
+			width: 100%;
+			font-size: 40px;
+			background: white;
+			padding: 20px;
+		}
+
+		.popup img {
+			max-width: 50%;
+		}
+	</style>
+</head>
+<body dir="rtl">
+<h1>שולה המוקשים</h1>
+<h2>משחק שכל המשפחה אוהבת</h2>
+<div id="succees" class="popup">
+	כל הכבוד
+	<br/>
+	<img src="/wp-content/uploads/2020/05/success.gif"/>
+</div>
+<div id="failed" class="popup">
+	מוקש ! חבל נסה שוב<br/>
+	<img src="/wp-content/uploads/2020/05/failed.gif"/>
+</div>
+<table id="board cover">
+	<tr>
+		<td class="number cover" data-number="1"></td>
+		<td class="danger cover"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="empty cover"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="danger cover"></td>
+		<td class="number cover" data-number="2"></td>
+		<td class="danger cover"></td>
+		<td class="number cover" data-number="1"></td>
+	</tr>
+	<tr>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="empty cover"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="2"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+	</tr>
+	<tr>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+	</tr>
+	<tr>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="2"></td>
+		<td class="number cover" data-number="2"></td>
+	</tr>
+	<tr>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="danger cover"></td>
+		<td class="danger cover"></td>
+	</tr>
+	<tr>
+		<td class="empty cover"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="3"></td>
+		<td class="danger cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="number cover" data-number="2"></td>
+	</tr>
+	<tr>
+		<td class="empty cover"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="danger cover"></td>
+		<td class="empty cover"></td>
+		<td class="danger cover"></td>
+		<td class="number cover" data-number="3"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+	</tr>
+	<tr>
+		<td class="empty cover"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="2"></td>
+		<td class="number cover" data-number="2"></td>
+		<td class="danger cover"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="danger cover"></td>
+	</tr>
+	<tr>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="empty cover"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="empty cover"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+		<td class="number cover" data-number="1"></td>
+	</tr>
+</table>
+</body>
+</html>
